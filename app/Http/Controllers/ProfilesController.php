@@ -65,6 +65,11 @@ class ProfilesController extends Controller
         return User::with('profile')->wherename($username)->firstOrFail();
     }
 
+    public function getUserById($id)
+    {
+        return User::with('profile')->find($id)->firstOrFail();
+    }
+
     /**
      * Display the specified resource.
      *
@@ -72,13 +77,9 @@ class ProfilesController extends Controller
      *
      * @return Response
      */
-    public function show($username)
+    public function show()
     {
-        try {
-            $user = $this->getUserByUsername($username);
-        } catch (ModelNotFoundException $exception) {
-            abort(404);
-        }
+        $user = \Auth::user();
 
         $currentTheme = Theme::find($user->profile->theme_id);
 
@@ -97,27 +98,11 @@ class ProfilesController extends Controller
      *
      * @return mixed
      */
-    public function edit($username)
+    public function edit()
     {
-        try {
-            $user = $this->getUserByUsername($username);
-        } catch (ModelNotFoundException $exception) {
-            return view('pages.status')
-                ->with('error', trans('profile.notYourProfile'))
-                ->with('error_title', trans('profile.notYourProfileTitle'));
-        }
-
-        $themes = Theme::where('status', 1)
-                        ->orderBy('name', 'asc')
-                        ->get();
-
-        $currentTheme = Theme::find($user->profile->theme_id);
-
+        $user = \Auth::user();
         $data = [
             'user'         => $user,
-            'themes'       => $themes,
-            'currentTheme' => $currentTheme,
-
         ];
 
         return view('profiles.edit')->with($data);
@@ -132,9 +117,10 @@ class ProfilesController extends Controller
      *
      * @return mixed
      */
-    public function update($username, Request $request)
+    public function update($user_id)
     {
-        $user = $this->getUserByUsername($username);
+        $user = $this->getUserById($user_id);
+        dd($user);
 
         $input = Input::only('theme_id', 'location', 'bio', 'twitter_username', 'github_username', 'avatar_status');
 

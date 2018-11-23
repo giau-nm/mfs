@@ -1,0 +1,15 @@
+small.required{
+    color:#1ba1e2;
+}
+small.error{
+    color:#ce352c;
+}
+td{
+    white-space: nowrap
+}
+.select2-hidden-accessible{
+    display: none;
+}
+.input-control .select2-container{
+    width: 100%!important;
+}

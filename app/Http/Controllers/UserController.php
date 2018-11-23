@@ -24,11 +24,6 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::user();
-
-        if ($user->isAdmin()) {
-            return view('pages.admin.home');
-        }
-
         return view('pages.user.home');
     }
 }
