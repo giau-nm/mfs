@@ -1,75 +1,158 @@
+<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>MFS</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 
-    <link rel="stylesheet" href="/css/metro.css">
-    <link rel="stylesheet" href="/css/metro-responsive.css">
-    <link rel="stylesheet" href="/css/metro-schemes.css">
-    <link rel="stylesheet" href="/css/metro-icons.css">
-    <link rel="stylesheet" href="/css/metro-colors.css">
-    <link rel="stylesheet" href="/css/metro-custom.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.6.0/jsoneditor.min.css">
-    <script type="text/javascript" src="/js/jquery.js"></script>
-    <script type="text/javascript" src="/js/metro.js"></script>
-    <script type="text/javascript" src="/js/select2.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/5.6.0/jsoneditor.min.js"></script>
-    <style id="ace_editor.css">.ace_editor {	position: relative;	overflow: hidden;	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;	direction: ltr;	text-align: left;	}	.ace_scroller {	position: absolute;	overflow: hidden;	top: 0;	bottom: 0;	background-color: inherit;	-ms-user-select: none;	-moz-user-select: none;	-webkit-user-select: none;	user-select: none;	cursor: text;	}	.ace_content {	position: absolute;	-moz-box-sizing: border-box;	-webkit-box-sizing: border-box;	box-sizing: border-box;	min-width: 100%;	}	.ace_dragging .ace_scroller:before{	position: absolute;	top: 0;	left: 0;	right: 0;	bottom: 0;	content: '';	background: rgba(250, 250, 250, 0.01);	z-index: 1000;	}	.ace_dragging.ace_dark .ace_scroller:before{	background: rgba(0, 0, 0, 0.01);	}	.ace_selecting, .ace_selecting * {	cursor: text !important;	}	.ace_gutter {	position: absolute;	overflow : hidden;	width: auto;	top: 0;	bottom: 0;	left: 0;	cursor: default;	z-index: 4;	-ms-user-select: none;	-moz-user-select: none;	-webkit-user-select: none;	user-select: none;	}	.ace_gutter-active-line {	position: absolute;	left: 0;	right: 0;	}	.ace_scroller.ace_scroll-left {	box-shadow: 17px 0 16px -16px rgba(0, 0, 0, 0.4) inset;	}	.ace_gutter-cell {	padding-left: 19px;	padding-right: 6px;	background-repeat: no-repeat;	}	.ace_gutter-cell.ace_error {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABOFBMVEX/////////QRswFAb/Ui4wFAYwFAYwFAaWGAfDRymzOSH/PxswFAb/SiUwFAYwFAbUPRvjQiDllog5HhHdRybsTi3/Tyv9Tir+Syj/UC3////XurebMBIwFAb/RSHbPx/gUzfdwL3kzMivKBAwFAbbvbnhPx66NhowFAYwFAaZJg8wFAaxKBDZurf/RB6mMxb/SCMwFAYwFAbxQB3+RB4wFAb/Qhy4Oh+4QifbNRcwFAYwFAYwFAb/QRzdNhgwFAYwFAbav7v/Uy7oaE68MBK5LxLewr/r2NXewLswFAaxJw4wFAbkPRy2PyYwFAaxKhLm1tMwFAazPiQwFAaUGAb/QBrfOx3bvrv/VC/maE4wFAbRPBq6MRO8Qynew8Dp2tjfwb0wFAbx6eju5+by6uns4uH9/f36+vr/GkHjAAAAYnRSTlMAGt+64rnWu/bo8eAA4InH3+DwoN7j4eLi4xP99Nfg4+b+/u9B/eDs1MD1mO7+4PHg2MXa347g7vDizMLN4eG+Pv7i5evs/v79yu7S3/DV7/498Yv24eH+4ufQ3Ozu/v7+y13sRqwAAADLSURBVHjaZc/XDsFgGIBhtDrshlitmk2IrbHFqL2pvXf/+78DPokj7+Fz9qpU/9UXJIlhmPaTaQ6QPaz0mm+5gwkgovcV6GZzd5JtCQwgsxoHOvJO15kleRLAnMgHFIESUEPmawB9ngmelTtipwwfASilxOLyiV5UVUyVAfbG0cCPHig+GBkzAENHS0AstVF6bacZIOzgLmxsHbt2OecNgJC83JERmePUYq8ARGkJx6XtFsdddBQgZE2nPR6CICZhawjA4Fb/chv+399kfR+MMMDGOQAAAABJRU5ErkJggg==");	background-repeat: no-repeat;	background-position: 2px center;	}	.ace_gutter-cell.ace_warning {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAmVBMVEX///8AAAD///8AAAAAAABPSzb/5sAAAAB/blH/73z/ulkAAAAAAAD85pkAAAAAAAACAgP/vGz/rkDerGbGrV7/pkQICAf////e0IsAAAD/oED/qTvhrnUAAAD/yHD/njcAAADuv2r/nz//oTj/p064oGf/zHAAAAA9Nir/tFIAAAD/tlTiuWf/tkIAAACynXEAAAAAAAAtIRW7zBpBAAAAM3RSTlMAABR1m7RXO8Ln31Z36zT+neXe5OzooRDfn+TZ4p3h2hTf4t3k3ucyrN1K5+Xaks52Sfs9CXgrAAAAjklEQVR42o3PbQ+CIBQFYEwboPhSYgoYunIqqLn6/z8uYdH8Vmdnu9vz4WwXgN/xTPRD2+sgOcZjsge/whXZgUaYYvT8QnuJaUrjrHUQreGczuEafQCO/SJTufTbroWsPgsllVhq3wJEk2jUSzX3CUEDJC84707djRc5MTAQxoLgupWRwW6UB5fS++NV8AbOZgnsC7BpEAAAAABJRU5ErkJggg==");	background-position: 2px center;	}	.ace_gutter-cell.ace_info {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAJ0Uk5TAAB2k804AAAAPklEQVQY02NgIB68QuO3tiLznjAwpKTgNyDbMegwisCHZUETUZV0ZqOquBpXj2rtnpSJT1AEnnRmL2OgGgAAIKkRQap2htgAAAAASUVORK5CYII=");	background-position: 2px center;	}	.ace_dark .ace_gutter-cell.ace_info {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAJFBMVEUAAAChoaGAgIAqKiq+vr6tra1ZWVmUlJSbm5s8PDxubm56enrdgzg3AAAAAXRSTlMAQObYZgAAAClJREFUeNpjYMAPdsMYHegyJZFQBlsUlMFVCWUYKkAZMxZAGdxlDMQBAG+TBP4B6RyJAAAAAElFTkSuQmCC");	}	.ace_scrollbar {	position: absolute;	right: 0;	bottom: 0;	z-index: 6;	}	.ace_scrollbar-inner {	position: absolute;	cursor: text;	left: 0;	top: 0;	}	.ace_scrollbar-v{	overflow-x: hidden;	overflow-y: scroll;	top: 0;	}	.ace_scrollbar-h {	overflow-x: scroll;	overflow-y: hidden;	left: 0;	}	.ace_print-margin {	position: absolute;	height: 100%;	}	.ace_text-input {	position: absolute;	z-index: 0;	width: 0.5em;	height: 1em;	opacity: 0;	background: transparent;	-moz-appearance: none;	appearance: none;	border: none;	resize: none;	outline: none;	overflow: hidden;	font: inherit;	padding: 0 1px;	margin: 0 -1px;	text-indent: -1em;	-ms-user-select: text;	-moz-user-select: text;	-webkit-user-select: text;	user-select: text;	white-space: pre!important;	}	.ace_text-input.ace_composition {	background: inherit;	color: inherit;	z-index: 1000;	opacity: 1;	text-indent: 0;	}	.ace_layer {	z-index: 1;	position: absolute;	overflow: hidden;	word-wrap: normal;	white-space: pre;	height: 100%;	width: 100%;	-moz-box-sizing: border-box;	-webkit-box-sizing: border-box;	box-sizing: border-box;	pointer-events: none;	}	.ace_gutter-layer {	position: relative;	width: auto;	text-align: right;	pointer-events: auto;	}	.ace_text-layer {	font: inherit !important;	}	.ace_cjk {	display: inline-block;	text-align: center;	}	.ace_cursor-layer {	z-index: 4;	}	.ace_cursor {	z-index: 4;	position: absolute;	-moz-box-sizing: border-box;	-webkit-box-sizing: border-box;	box-sizing: border-box;	border-left: 2px solid;	transform: translatez(0);	}	.ace_slim-cursors .ace_cursor {	border-left-width: 1px;	}	.ace_overwrite-cursors .ace_cursor {	border-left-width: 0;	border-bottom: 1px solid;	}	.ace_hidden-cursors .ace_cursor {	opacity: 0.2;	}	.ace_smooth-blinking .ace_cursor {	-webkit-transition: opacity 0.18s;	transition: opacity 0.18s;	}	.ace_editor.ace_multiselect .ace_cursor {	border-left-width: 1px;	}	.ace_marker-layer .ace_step, .ace_marker-layer .ace_stack {	position: absolute;	z-index: 3;	}	.ace_marker-layer .ace_selection {	position: absolute;	z-index: 5;	}	.ace_marker-layer .ace_bracket {	position: absolute;	z-index: 6;	}	.ace_marker-layer .ace_active-line {	position: absolute;	z-index: 2;	}	.ace_marker-layer .ace_selected-word {	position: absolute;	z-index: 4;	-moz-box-sizing: border-box;	-webkit-box-sizing: border-box;	box-sizing: border-box;	}	.ace_line .ace_fold {	-moz-box-sizing: border-box;	-webkit-box-sizing: border-box;	box-sizing: border-box;	display: inline-block;	height: 11px;	margin-top: -2px;	vertical-align: middle;	background-image:	url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAJCAYAAADU6McMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJpJREFUeNpi/P//PwOlgAXGYGRklAVSokD8GmjwY1wasKljQpYACtpCFeADcHVQfQyMQAwzwAZI3wJKvCLkfKBaMSClBlR7BOQikCFGQEErIH0VqkabiGCAqwUadAzZJRxQr/0gwiXIal8zQQPnNVTgJ1TdawL0T5gBIP1MUJNhBv2HKoQHHjqNrA4WO4zY0glyNKLT2KIfIMAAQsdgGiXvgnYAAAAASUVORK5CYII="),	url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA3CAYAAADNNiA5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACJJREFUeNpi+P//fxgTAwPDBxDxD078RSX+YeEyDFMCIMAAI3INmXiwf2YAAAAASUVORK5CYII=");	background-repeat: no-repeat, repeat-x;	background-position: center center, top left;	color: transparent;	border: 1px solid black;	border-radius: 2px;	cursor: pointer;	pointer-events: auto;	}	.ace_dark .ace_fold {	}	.ace_fold:hover{	background-image:	url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAJCAYAAADU6McMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJpJREFUeNpi/P//PwOlgAXGYGRklAVSokD8GmjwY1wasKljQpYACtpCFeADcHVQfQyMQAwzwAZI3wJKvCLkfKBaMSClBlR7BOQikCFGQEErIH0VqkabiGCAqwUadAzZJRxQr/0gwiXIal8zQQPnNVTgJ1TdawL0T5gBIP1MUJNhBv2HKoQHHjqNrA4WO4zY0glyNKLT2KIfIMAAQsdgGiXvgnYAAAAASUVORK5CYII="),	url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA3CAYAAADNNiA5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACBJREFUeNpi+P//fz4TAwPDZxDxD5X4i5fLMEwJgAADAEPVDbjNw87ZAAAAAElFTkSuQmCC");	}	.ace_tooltip {	background-color: #FFF;	background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.1));	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));	border: 1px solid gray;	border-radius: 1px;	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);	color: black;	max-width: 100%;	padding: 3px 4px;	position: fixed;	z-index: 999999;	-moz-box-sizing: border-box;	-webkit-box-sizing: border-box;	box-sizing: border-box;	cursor: default;	white-space: pre;	word-wrap: break-word;	line-height: normal;	font-style: normal;	font-weight: normal;	letter-spacing: normal;	pointer-events: none;	}	.ace_folding-enabled > .ace_gutter-cell {	padding-right: 13px;	}	.ace_fold-widget {	-moz-box-sizing: border-box;	-webkit-box-sizing: border-box;	box-sizing: border-box;	margin: 0 -12px 0 1px;	display: none;	width: 11px;	vertical-align: top;	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAANElEQVR42mWKsQ0AMAzC8ixLlrzQjzmBiEjp0A6WwBCSPgKAXoLkqSot7nN3yMwR7pZ32NzpKkVoDBUxKAAAAABJRU5ErkJggg==");	background-repeat: no-repeat;	background-position: center;	border-radius: 3px;	border: 1px solid transparent;	cursor: pointer;	}	.ace_folding-enabled .ace_fold-widget {	display: inline-block;   	}	.ace_fold-widget.ace_end {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAANElEQVR42m3HwQkAMAhD0YzsRchFKI7sAikeWkrxwScEB0nh5e7KTPWimZki4tYfVbX+MNl4pyZXejUO1QAAAABJRU5ErkJggg==");	}	.ace_fold-widget.ace_closed {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAGCAYAAAAG5SQMAAAAOUlEQVR42jXKwQkAMAgDwKwqKD4EwQ26sSOkVWjgIIHAzPiCgaqiqnJHZnKICBERHN194O5b9vbLuAVRL+l0YWnZAAAAAElFTkSuQmCCXA==");	}	.ace_fold-widget:hover {	border: 1px solid rgba(0, 0, 0, 0.3);	background-color: rgba(255, 255, 255, 0.2);	box-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);	}	.ace_fold-widget:active {	border: 1px solid rgba(0, 0, 0, 0.4);	background-color: rgba(0, 0, 0, 0.05);	box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);	}	.ace_dark .ace_fold-widget {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHklEQVQIW2P4//8/AzoGEQ7oGCaLLAhWiSwB146BAQCSTPYocqT0AAAAAElFTkSuQmCC");	}	.ace_dark .ace_fold-widget.ace_end {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAH0lEQVQIW2P4//8/AxQ7wNjIAjDMgC4AxjCVKBirIAAF0kz2rlhxpAAAAABJRU5ErkJggg==");	}	.ace_dark .ace_fold-widget.ace_closed {	background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAYAAACAcVaiAAAAHElEQVQIW2P4//+/AxAzgDADlOOAznHAKgPWAwARji8UIDTfQQAAAABJRU5ErkJggg==");	}	.ace_dark .ace_fold-widget:hover {	box-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);	background-color: rgba(255, 255, 255, 0.1);	}	.ace_dark .ace_fold-widget:active {	box-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);	}	.ace_fold-widget.ace_invalid {	background-color: #FFB4B4;	border-color: #DE5555;	}	.ace_fade-fold-widgets .ace_fold-widget {	-webkit-transition: opacity 0.4s ease 0.05s;	transition: opacity 0.4s ease 0.05s;	opacity: 0;	}	.ace_fade-fold-widgets:hover .ace_fold-widget {	-webkit-transition: opacity 0.05s ease 0.05s;	transition: opacity 0.05s ease 0.05s;	opacity:1;	}	.ace_underline {	text-decoration: underline;	}	.ace_bold {	font-weight: bold;	}	.ace_nobold .ace_bold {	font-weight: normal;	}	.ace_italic {	font-style: italic;	}	.ace_error-marker {	background-color: rgba(255, 0, 0,0.2);	position: absolute;	z-index: 9;	}	.ace_highlight-marker {	background-color: rgba(255, 255, 0,0.2);	position: absolute;	z-index: 8;	}	.ace_br1 {border-top-left-radius    : 3px;}	.ace_br2 {border-top-right-radius   : 3px;}	.ace_br3 {border-top-left-radius    : 3px; border-top-right-radius:    3px;}	.ace_br4 {border-bottom-right-radius: 3px;}	.ace_br5 {border-top-left-radius    : 3px; border-bottom-right-radius: 3px;}	.ace_br6 {border-top-right-radius   : 3px; border-bottom-right-radius: 3px;}	.ace_br7 {border-top-left-radius    : 3px; border-top-right-radius:    3px; border-bottom-right-radius: 3px;}	.ace_br8 {border-bottom-left-radius : 3px;}	.ace_br9 {border-top-left-radius    : 3px; border-bottom-left-radius:  3px;}	.ace_br10{border-top-right-radius   : 3px; border-bottom-left-radius:  3px;}	.ace_br11{border-top-left-radius    : 3px; border-top-right-radius:    3px; border-bottom-left-radius:  3px;}	.ace_br12{border-bottom-right-radius: 3px; border-bottom-left-radius:  3px;}	.ace_br13{border-top-left-radius    : 3px; border-bottom-right-radius: 3px; border-bottom-left-radius:  3px;}	.ace_br14{border-top-right-radius   : 3px; border-bottom-right-radius: 3px; border-bottom-left-radius:  3px;}	.ace_br15{border-top-left-radius    : 3px; border-top-right-radius:    3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}
-        /*# sourceURL=ace/css/ace_editor.css */</style>
-    <style id="ace-tm">.ace-tm .ace_gutter {	background: #f0f0f0;	color: #333;	}	.ace-tm .ace_print-margin {	width: 1px;	background: #e8e8e8;	}	.ace-tm .ace_fold {	background-color: #6B72E6;	}	.ace-tm {	background-color: #FFFFFF;	color: black;	}	.ace-tm .ace_cursor {	color: black;	}	.ace-tm .ace_invisible {	color: rgb(191, 191, 191);	}	.ace-tm .ace_storage,	.ace-tm .ace_keyword {	color: blue;	}	.ace-tm .ace_constant {	color: rgb(197, 6, 11);	}	.ace-tm .ace_constant.ace_buildin {	color: rgb(88, 72, 246);	}	.ace-tm .ace_constant.ace_language {	color: rgb(88, 92, 246);	}	.ace-tm .ace_constant.ace_library {	color: rgb(6, 150, 14);	}	.ace-tm .ace_invalid {	background-color: rgba(255, 0, 0, 0.1);	color: red;	}	.ace-tm .ace_support.ace_function {	color: rgb(60, 76, 114);	}	.ace-tm .ace_support.ace_constant {	color: rgb(6, 150, 14);	}	.ace-tm .ace_support.ace_type,	.ace-tm .ace_support.ace_class {	color: rgb(109, 121, 222);	}	.ace-tm .ace_keyword.ace_operator {	color: rgb(104, 118, 135);	}	.ace-tm .ace_string {	color: rgb(3, 106, 7);	}	.ace-tm .ace_comment {	color: rgb(76, 136, 107);	}	.ace-tm .ace_comment.ace_doc {	color: rgb(0, 102, 255);	}	.ace-tm .ace_comment.ace_doc.ace_tag {	color: rgb(128, 159, 191);	}	.ace-tm .ace_constant.ace_numeric {	color: rgb(0, 0, 205);	}	.ace-tm .ace_variable {	color: rgb(49, 132, 149);	}	.ace-tm .ace_xml-pe {	color: rgb(104, 104, 91);	}	.ace-tm .ace_entity.ace_name.ace_function {	color: #0000A2;	}	.ace-tm .ace_heading {	color: rgb(12, 7, 255);	}	.ace-tm .ace_list {	color:rgb(185, 6, 144);	}	.ace-tm .ace_meta.ace_tag {	color:rgb(0, 22, 142);	}	.ace-tm .ace_string.ace_regex {	color: rgb(255, 0, 0)	}	.ace-tm .ace_marker-layer .ace_selection {	background: rgb(181, 213, 255);	}	.ace-tm.ace_multiselect .ace_selection.ace_start {	box-shadow: 0 0 3px 0px white;	}	.ace-tm .ace_marker-layer .ace_step {	background: rgb(252, 255, 0);	}	.ace-tm .ace_marker-layer .ace_stack {	background: rgb(164, 229, 101);	}	.ace-tm .ace_marker-layer .ace_bracket {	margin: -1px 0 0 -1px;	border: 1px solid rgb(192, 192, 192);	}	.ace-tm .ace_marker-layer .ace_active-line {	background: rgba(0, 0, 0, 0.07);	}	.ace-tm .ace_gutter-active-line {	background-color : #dcdcdc;	}	.ace-tm .ace_marker-layer .ace_selected-word {	background: rgb(250, 250, 255);	border: 1px solid rgb(200, 200, 250);	}	.ace-tm .ace_indent-guide {	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;	}
-        /*# sourceURL=ace/css/ace-tm */</style>
-    <style> .error_widget_wrapper {	        background: inherit;	        color: inherit;	        border:none	    }	    .error_widget {	        border-top: solid 2px;	        border-bottom: solid 2px;	        margin: 5px 0;	        padding: 10px 40px;	        white-space: pre-wrap;	    }	    .error_widget.ace_error, .error_widget_arrow.ace_error{	        border-color: #ff5a5a	    }	    .error_widget.ace_warning, .error_widget_arrow.ace_warning{	        border-color: #F1D817	    }	    .error_widget.ace_info, .error_widget_arrow.ace_info{	        border-color: #5a5a5a	    }	    .error_widget.ace_ok, .error_widget_arrow.ace_ok{	        border-color: #5aaa5a	    }	    .error_widget_arrow {	        position: absolute;	        border: solid 5px;	        border-top-color: transparent!important;	        border-right-color: transparent!important;	        border-left-color: transparent!important;	        top: -5px;	    }	</style>
-    <style id="ace_searchbox"> .ace_search {	background-color: #ddd;	border: 1px solid #cbcbcb;	border-top: 0 none;	max-width: 325px;	overflow: hidden;	margin: 0;	padding: 4px;	padding-right: 6px;	padding-bottom: 0;	position: absolute;	top: 0px;	z-index: 99;	white-space: normal;	}	.ace_search.left {	border-left: 0 none;	border-radius: 0px 0px 5px 0px;	left: 0;	}	.ace_search.right {	border-radius: 0px 0px 0px 5px;	border-right: 0 none;	right: 0;	}	.ace_search_form, .ace_replace_form {	border-radius: 3px;	border: 1px solid #cbcbcb;	float: left;	margin-bottom: 4px;	overflow: hidden;	}	.ace_search_form.ace_nomatch {	outline: 1px solid red;	}	.ace_search_field {	background-color: white;	color: black;	border-right: 1px solid #cbcbcb;	border: 0 none;	-webkit-box-sizing: border-box;	-moz-box-sizing: border-box;	box-sizing: border-box;	float: left;	height: 22px;	outline: 0;	padding: 0 7px;	width: 214px;	margin: 0;	}	.ace_searchbtn,	.ace_replacebtn {	background: #fff;	border: 0 none;	border-left: 1px solid #dcdcdc;	cursor: pointer;	float: left;	height: 22px;	margin: 0;	position: relative;	}	.ace_searchbtn:last-child,	.ace_replacebtn:last-child {	border-top-right-radius: 3px;	border-bottom-right-radius: 3px;	}	.ace_searchbtn:disabled {	background: none;	cursor: default;	}	.ace_searchbtn {	background-position: 50% 50%;	background-repeat: no-repeat;	width: 27px;	}	.ace_searchbtn.prev {	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADFJREFUeNpiSU1NZUAC/6E0I0yACYskCpsJiySKIiY0SUZk40FyTEgCjGgKwTRAgAEAQJUIPCE+qfkAAAAASUVORK5CYII=);    	}	.ace_searchbtn.next {	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADRJREFUeNpiTE1NZQCC/0DMyIAKwGJMUAYDEo3M/s+EpvM/mkKwCQxYjIeLMaELoLMBAgwAU7UJObTKsvAAAAAASUVORK5CYII=);    	}	.ace_searchbtn_close {	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAYAAABRVo5BAAAAZ0lEQVR42u2SUQrAMAhDvazn8OjZBilCkYVVxiis8H4CT0VrAJb4WHT3C5xU2a2IQZXJjiQIRMdkEoJ5Q2yMqpfDIo+XY4k6h+YXOyKqTIj5REaxloNAd0xiKmAtsTHqW8sR2W5f7gCu5nWFUpVjZwAAAABJRU5ErkJggg==) no-repeat 50% 0;	border-radius: 50%;	border: 0 none;	color: #656565;	cursor: pointer;	float: right;	font: 16px/16px Arial;	height: 14px;	margin: 5px 1px 9px 5px;	padding: 0;	text-align: center;	width: 14px;	}	.ace_searchbtn_close:hover {	background-color: #656565;	background-position: 50% 100%;	color: white;	}	.ace_replacebtn.prev {	width: 54px	}	.ace_replacebtn.next {	width: 27px	}	.ace_button {	margin-left: 2px;	cursor: pointer;	-webkit-user-select: none;	-moz-user-select: none;	-o-user-select: none;	-ms-user-select: none;	user-select: none;	overflow: hidden;	opacity: 0.7;	border: 1px solid rgba(100,100,100,0.23);	padding: 1px;	-moz-box-sizing: border-box;	box-sizing:    border-box;	color: black;	}	.ace_button:hover {	background-color: #eee;	opacity:1;	}	.ace_button:active {	background-color: #ddd;	}	.ace_button.checked {	border-color: #3399ff;	opacity:1;	}	.ace_search_options{	margin-bottom: 3px;	text-align: right;	-webkit-user-select: none;	-moz-user-select: none;	-o-user-select: none;	-ms-user-select: none;	user-select: none;	}
-        /*# sourceURL=ace/css/ace_searchbox */</style>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {
-        'packages': ['corechart']
-      });
-    </script>
-    <script>
-      window.Laravel = {!! json_encode([
-                'csrfToken' => csrf_token(),
-            ]) !!};
-    </script>
-    <script type="text/javascript" charset="UTF-8" src="https://www.gstatic.com/charts/46.1/loader.js"></script>
-    <link id="load-css-0" rel="stylesheet" type="text/css" href="https://www.gstatic.com/charts/46.1/css/core/tooltip.css">
-    <link id="load-css-1" rel="stylesheet" type="text/css" href="https://www.gstatic.com/charts/46.1/css/util/util.css">
-    <script type="text/javascript" charset="UTF-8" src="https://www.gstatic.com/charts/46.1/js/jsapi_compiled_format_module.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="https://www.gstatic.com/charts/46.1/js/jsapi_compiled_default_module.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="https://www.gstatic.com/charts/46.1/js/jsapi_compiled_ui_module.js"></script>
-    <script type="text/javascript" charset="UTF-8" src="https://www.gstatic.com/charts/46.1/js/jsapi_compiled_corechart_module.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/css/skins/_all-skins.min.css">
+
+    <!-- iCheck -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/square/_all.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    @yield('extents_css')
+
+    @yield('css')
 </head>
 
-<body>
-<div id="menu">
-    @include('layouts.header')
-</div>
-<div class="container page-content">
-    <div id="app">
+<body class="skin-blue sidebar-mini">
+@if (!Auth::guest())
+    <div class="wrapper">
+        <!-- Main Header -->
+        <header class="main-header">
+
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <b>Mobifone</b>
+            </a>
+
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="http://infyom.com/images/logo/blue_logo_150x150.jpg"
+                                     class="user-image" alt="User Image"/>
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs">{!! Auth::user()->name !!}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- The user image in the menu -->
+                                <li class="user-header" style="height: 64px">
+                                    <p>
+                                        {!! Auth::user()->name !!}
+                                    </p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer" >
+                                    <a href="{!! url('/profile/edit/'.Auth::user()->id) !!}">Sửa thông tin liên hệ</a>
+                                </li>
+                                <li class="user-footer" >
+                                    <a href="{!! url('/password') !!}">Đổi mật khẩu</a>
+                                </li>
+                                <li class="user-footer" >
+                                    <a href="{!! url('/logout') !!}"">
+                                            Đăng xuất
+                                        </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Left side column. contains the logo and sidebar -->
+        @include('layouts.sidebar')
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
             @yield('content')
+        </div>
+
+        <!-- Main Footer -->
+        <footer class="main-footer" style="max-height: 100px;text-align: center">
+            <strong>Copyright © 2018 <a href="#">Company</a>.</strong> All rights reserved.
+        </footer>
+
     </div>
-    <script id="bundle-script" src="/apps/dashboard.js">
-    </script>
-</div>
+@else
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
 
+                <!-- Collapsed Hamburger -->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#app-navbar-collapse">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
 
+                <!-- Branding Image -->
+            </div>
+
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <!-- Left Side Of Navbar -->
+                <ul class="nav navbar-nav">
+                    <li><a href="{!! url('/home') !!}">Home</a></li>
+                </ul>
+
+                <!-- Right Side Of Navbar -->
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- Authentication Links -->
+                    <li><a href="{!! url('/login') !!}">Login</a></li>
+                    <li><a href="{!! url('/register') !!}">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    @yield('content')
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- jQuery 3.1.1 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- AdminLTE App -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.3/js/adminlte.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
+
+    @yield('extents_js')
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

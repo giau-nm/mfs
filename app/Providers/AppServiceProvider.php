@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Request;
+use App\Models\Device;
+use App\Observers\RequestObserver;
+use App\Observers\DeviceObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,8 +18,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //Paginator::useBootstrapThree();
-        Schema::defaultStringLength(191);
+        Validator::extend('max_date_request', 'App\Http\Validators\CustomValidator@maxDateRequest');
+        Validator::replacer('max_date_request', function ($message, $attribute, $rule, $parameters) {
+            $requestData = $this->app->request->all();
+            $message = str_replace(':start_date', $requestData[$parameters[0]], $message);
+
+            return str_replace(':max_date', $parameters[1], $message);
+        });
+
+        Request::observe(RequestObserver::class);
+        Device::observe(DeviceObserver::class);
     }
 
     /**

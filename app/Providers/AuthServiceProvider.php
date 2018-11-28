@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -12,7 +13,10 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        'App\Models\Device' => 'App\Policies\DevicePolicy',
+        'App\Models\Report' => 'App\Policies\ReportPolicy',
+        'App\Models\Project' => 'App\Policies\ProjectPolicy',
+        'App\Models\Request' => 'App\Policies\RequestPolicy',
     ];
 
     /**
@@ -25,5 +29,17 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+    }
+
+    public static function validateCompanyEmail($userEmail)
+    {
+        foreach (COMPANY_EMAIL_DOMAIN as $domain) {
+            $domainRegex = str_replace('.', '\.', $domain);
+            if (preg_match('/^.+@' . $domainRegex . '$/', $userEmail)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

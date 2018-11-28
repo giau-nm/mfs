@@ -1,32 +1,22 @@
 <?php
 
-namespace App\Models;
+namespace app\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasRoleAndPermission;
-    use Notifiable;
     use SoftDeletes;
 
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
     protected $table = 'users';
 
-    /**
-     * The attributes that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id'];
+    use Notifiable;
+
+    public const TYPE_ADMIN = 1;
+    public const TYPE_NORMAL = 0;
 
     /**
      * The attributes that are mass assignable.
@@ -34,19 +24,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'first_name',
-        'last_name',
-        'email',
-        'password',
-        'activated',
-        'token',
-        'signup_ip_address',
-        'signup_confirmation_ip_address',
-        'signup_sm_ip_address',
-        'admin_ip_address',
-        'updated_ip_address',
-        'deleted_ip_address',
+        'name', 'email', 'password', 'type'
     ];
 
     /**
@@ -55,61 +33,35 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
-        'activated',
-        'token',
+        'password', 'remember_token',
     ];
 
-    protected $dates = [
-        'deleted_at',
-    ];
-
-    /**
-     * Build Social Relationships.
-     *
-     * @var array
-     */
-    public function social()
-    {
-        return $this->hasMany('App\Models\Social');
-    }
-
-    /**
-     * User Profile Relationships.
-     *
-     * @var array
-     */
-    public function profile()
-    {
-        return $this->hasOne('App\Models\Profile');
-    }
-
-    // User Profile Setup - SHould move these to a trait or interface...
-
-    public function profiles()
-    {
-        return $this->belongsToMany('App\Models\Profile')->withTimestamps();
-    }
-
-    public function hasProfile($name)
-    {
-        foreach ($this->profiles as $profile) {
-            if ($profile->name == $name) {
-                return true;
-            }
-        }
-
+    public function isAdmin() {
+        if ($this->type == self::TYPE_ADMIN) return true;
         return false;
     }
 
-    public function assignProfile($profile)
-    {
-        return $this->profiles()->attach($profile);
-    }
+    public static function createIfNotExist($userData) {
+        $email = $userData->email;
+        $userRecord = User::where('email', $email)->first();
 
-    public function removeProfile($profile)
-    {
-        return $this->profiles()->detach($profile);
+        if (is_null($userRecord)) {
+            //create user
+            $type = ($email == EMAIL_ADMIN_DEFAULT) ? self::TYPE_ADMIN : self::TYPE_NORMAL;
+            $time = $carbon = Carbon::now()->format('Y-m-d H:i:s');
+            $insertData = [
+                'name' => $userData->name,
+                'email' => $email,
+                'type'  => $type,
+                'password' => 'empty',
+                'created_at' => $time,
+                'updated_at' => $time,
+            ];
+
+            $id = self::insertGetId($insertData);
+            $userRecord = self::find($id);
+        }
+
+        return $userRecord;
     }
 }
